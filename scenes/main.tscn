@@ -1,0 +1,110 @@
+[gd_scene load_steps=6 format=3 uid="uid://slabhouse_main"]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="Script" path="res://scripts/card.gd" id="2_card"]
+
+[sub_resource type="Environment" id="Environment_shop"]
+background_mode=1
+background_color=Color(0.07, 0.08, 0.11, 1)
+ambient_light_source=2
+ambient_light_color=Color(0.55, 0.6, 0.72, 1)
+ambient_light_energy=0.6
+
+[sub_resource type="BoxMesh" id="BoxMesh_room"]
+size=Vector3(16, 5, 12)
+
+[sub_resource type="BoxMesh" id="BoxMesh_card"]
+size=Vector3(0.63, 0.008, 0.88)
+
+[node name="Main" type="Node3D"]
+script=ExtResource("1_main")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment=SubResource("Environment_shop")
+
+[node name="ShopRoom" type="MeshInstance3D" parent="."]
+transform=Transform(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+mesh=SubResource("BoxMesh_room")
+
+[node name="KeyLight" type="DirectionalLight3D" parent="."]
+transform=Transform(0.866, -0.5, 0, 0, 0.866, -0.5, -0.5, 0.5, 0.866, 0, 6, 4)
+light_energy=1.1
+shadow_enabled=true
+
+[node name="NeonLight" type="OmniLight3D" parent="."]
+transform=Transform(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 3.5, -2)
+light_color=Color(0.35, 0.85, 1, 1)
+light_energy=1.6
+omni_range=9.0
+
+[node name="Counter" type="StaticBody3D" parent="."]
+transform=Transform(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 1.5)
+
+[node name="CounterTop" type="MeshInstance3D" parent="Counter"]
+mesh=SubResource("BoxMesh_card")
+scale=Vector3(6, 80, 3)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform=Transform(1, 0, 0, 0, 0.866, 0.5, 0, -0.5, 0.866, 0, 3.2, 6.5)
+fov=55.0
+
+[node name="ShowcaseCard" type="MeshInstance3D" parent="."]
+transform=Transform(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15, 1.5)
+mesh=SubResource("BoxMesh_card")
+script=ExtResource("2_card")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="TopBar" type="Panel" parent="UI"]
+anchors_preset=10
+anchor_right=1.0
+offset_bottom=48.0
+
+[node name="CurrencyLabel" type="Label" parent="UI/TopBar"]
+offset_left=16.0
+offset_top=12.0
+offset_right=320.0
+offset_bottom=36.0
+text="Cash: $500"
+
+[node name="ScreenLabel" type="Label" parent="UI/TopBar"]
+anchor_left=0.5
+anchor_right=0.5
+offset_left=-160.0
+offset_top=12.0
+offset_right=160.0
+offset_bottom=36.0
+horizontal_alignment=1
+text="Main Shop"
+
+[node name="BuyLotButton" type="Button" parent="UI"]
+anchor_top=1.0
+anchor_bottom=1.0
+offset_left=16.0
+offset_top=-64.0
+offset_right=216.0
+offset_bottom=-16.0
+text="Buy Lot (B)"
+
+[node name="FlipCardButton" type="Button" parent="UI"]
+anchor_left=1.0
+anchor_right=1.0
+anchor_top=1.0
+anchor_bottom=1.0
+offset_left=-216.0
+offset_top=-64.0
+offset_right=-16.0
+offset_bottom=-16.0
+text="Flip Card (F)"
+
+[node name="MessageLabel" type="Label" parent="UI"]
+anchor_left=0.5
+anchor_right=0.5
+anchor_top=1.0
+anchor_bottom=1.0
+offset_left=-320.0
+offset_top=-110.0
+offset_right=320.0
+offset_bottom=-80.0
+horizontal_alignment=1
+text="Welcome to Slab House Tycoon."
