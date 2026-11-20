@@ -1,78 +1,67 @@
-# Slab House Tycoon
+# Slab House Tycoon — Milestone 1–5 Vertical Slice
 
-> **Buy the lot, spot the flaw, grade the gem, sell it live.**
+A single-player trading-card-shop tycoon. Buy parody packs, inspect
+pulled cards with a loupe at the Inspection Desk, grade and slab them,
+then sell raw, sell slabbed, or run a Whatnot-style live auction.
 
-A 3D simulation and tycoon game for PC and Mobile. You run a high-end trading
-card shop and live auction house: buy mystery lots of sports, anime, and comic
-trading cards, inspect rare pulls at the Inspection Desk, submit the best ones
-for professional grading, and sell graded slabs in a live-streaming virtual
-auction where hype and chat-bot bidders set the price.
+All sets, players, and creatures are **original parody content** — no
+real athletes, teams, or copyrighted characters.
 
-## What it is
+## Play the web version (instant, no install)
 
-- **Buy mystery lots** from tiered sports, anime, and comic suppliers.
-- **Open packs** and reveal cards with rarity and a hidden true condition.
-- **Inspection Desk** — a draggable magnifier checks centering ratios,
-  corners, edges, and surface print lines on rare pulls. Mark flaws and
-  decide whether a card is worth grading.
-- **Grading** — pay to submit a card and hope for a pristine 10, which
-  multiplies its value.
-- **Live auction** — a timed mini-game with a hype meter, chat-bot bidders,
-  rising bids, and a gavel slam to close the sale.
-- **Shop upgrades** — display cases, lighting, and neon signs that boost hype
-  and sale prices, plus higher-tier supplier boxes as you progress.
-- **Realistic 3D cards** — flip and rotate cards with dynamic holographic and
-  foil shader effects inside a polished, modern hobby shop.
+Open `index.html` in any browser (double-click it, or serve the folder).
+It is a complete, self-contained HTML5 canvas game:
 
-## Tech
+- **Pack Shop** — 3 parody sets (Gridiron Legends $30, Pocket Kaiju $25,
+  Mythic Marvels $35). Each pack pulls 5 cards, last card guaranteed
+  Rare or better. No F2P wait timers.
+- **Inspection Desk** — drag the loupe over the card to reveal the 4
+  real grading metrics: Front Centering (e.g. 55/45), 4 Corners
+  (whitening), 4 Edges (wear), Surface print lines (tilt the light
+  past ±25° to reveal them). All 4 metrics unlock grading.
+- **Grading & Slab Reveal** — $25 fee. Grade 1–10 is weighted from the
+  hidden sub-grades (centering 30%, corners 25%, edges 20%, surface
+  25%). Value multipliers: Gem Mint 10 = 5×, 9 = 3×, 8 = 2×, 7 = 1.5×,
+  6 = 1.2×, 5 = 1×, lower grades pay less than base.
+- **Live Stream Auction** — 15-second countdown, Hype Chat button that
+  boosts bidder momentum, AI bidders Whale (rare huge jumps), SnipeBot
+  (strikes in the last 4 seconds), BargainHunter (early small bids,
+  walks away above 1.2× value), and a manual Gavel Slam. A bid in the
+  final 3 seconds adds 2 seconds (max 2 extensions).
+- **Collection** — everything you own, with Sell and Send-to-Auction.
+- Progress (cash, inventory, stats) saves to browser localStorage.
 
-- **Engine:** Godot 4 (GDScript) — one codebase exports to PC and mobile,
-  with built-in shader/material support for holo/foil cards.
-- **Art:** 3D card models with a custom holographic shader, modern hobby
-  shop environment.
+Self-test: open `index.html?autotest=1` — it runs the full flow
+(pack → inspect → grade → sell → auction) and prints PASS/FAIL.
 
-## How to run
+## Godot 4 version
 
-1. Install **Godot 4.x** (4.3 or newer) from https://godotengine.org.
-2. Clone this repo and open `project.godot` in Godot.
-3. Press **F5** (or the Play button) to run the main scene
-   (`scenes/main.tscn`).
+Godot 4.3 project, portrait 720×1280 (`project.godot`, main scene
+`main.tscn`). Open the folder in Godot 4.3+ and press Play.
 
-### PC / mobile export
+| File | What it does |
+|---|---|
+| `scripts/card_data.gd` | Card resource: the 3 parody sets, pack pulls, hidden sub-grade rolls |
+| `scripts/grading.gd` | Grade 1–10 from sub-grades + value multipliers (Gem Mint 10 = 5×) |
+| `scripts/economy.gd` | Cash, inventory, pack buying, raw/slab selling, grading ($25) |
+| `scripts/inspection_desk.gd` | Draggable loupe, zone detection, 4-metric reveal, tiltable light |
+| `scripts/auction.gd` | 15s countdown, Hype Chat, Whale/SnipeBot/BargainHunter AI, Gavel Slam |
+| `scripts/main.gd` | Screen glue: wires Economy + Desk + Auction together |
 
-- **PC:** Project → Export → add the Windows/Linux preset, export.
-- **Mobile:** Project → Export → add the Android/iOS preset (requires the
-  Godot export templates and, for Android, the Android SDK). Touch controls
-  are handled through the same input actions as mouse input.
+The Godot scripts mirror the web game's systems one-to-one (same
+weights, prices, bidder caps, and rules), so the Godot version is a
+real starting point for the full game, not an empty shell. The web
+build is the fully playable vertical slice; the Godot scene is the
+same systems wired into a runnable project shell (UI layout is
+minimal — the desk, economy, and auction logic are complete).
 
-## Project layout
+## Layout
 
-| Path | Purpose |
-| --- | --- |
-| `project.godot` | Godot 4 project configuration and export settings |
-| `scenes/main.tscn` | Main 3D shop scene and UI root |
-| `scripts/main.gd` | Game loop, currency, shop state, screen switching |
-| `scripts/card.gd` | 3D card model, flip/rotate, foil/holo shader control |
-| `data/cards.json` | Initial card sets, rarities, suppliers, base values |
-
-## Build milestones
-
-1. Playable skeleton: 3D shop room, UI shell, currency and save, buy a lot
-   and receive a random card.
-2. Card data, pack opening, and 3D card model with holo/foil shader.
-3. Inspection Desk with magnifier, flaw marking, and
-   centering/corner/edge/surface checks.
-4. Grading submission, cost, and 1–10 reveal tied to true condition.
-5. Live auction with hype meter, chat-bot bidders, timed bidding, and
-   gavel slam.
-6. Shop upgrades and higher-tier supplier boxes with progression and
-   economy balance.
-7. Mobile touch controls, PC and mobile exports, tuning, and polish.
-
-## Open questions
-
-- Should cards use fictional sets or real licensed sports/anime/comic IP?
-- Paid game or free-to-play with in-app purchases — how should the currency
-  economy be balanced?
-- Is the auction strictly single-player against chat-bot bidders, or is any
-  real multiplayer intended later?
+```
+slab-house-tycoon/
+  index.html            playable HTML5 canvas game (self-contained)
+  project.godot         Godot 4.3 project
+  main.tscn             Godot main scene
+  scripts/              Godot GDScript systems (see table above)
+  README.md             this file
+```
