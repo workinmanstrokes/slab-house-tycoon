@@ -68,6 +68,48 @@ It is a complete, self-contained HTML5 canvas game:
 Self-test: open `index.html?autotest=1` — it runs the full flow
 (pack → inspect → grade → sell → auction) and prints PASS/FAIL.
 
+## Economy at a glance
+
+The loop, in order: buy a lot → inspect the pull → grade it or sell it
+raw → bank the cash. No number in the loop is hidden.
+
+| Step | Numbers |
+|---|---|
+| Start cash | $500 |
+| Packs | $25–$35 by set; 5 cards, last card Rare or better |
+| Raw sale (fixed offer) | Card base value ($2–$800 by rarity); always available, no auction needed |
+| Grading (Godot) | $25 flat; preview shows fee, grade range, and slab-value range before paying |
+| Grading (web) | Economy $10 / Regular $25 / Express $75 (see above) |
+| Slab value | Base value × grade multiplier (10 = 5×, 9 = 3×, 8 = 2×, 7 = 1.5×, 5 = 1×, 1 = 0.3×) |
+| Live auction | Graded slabs only; bids scale with slab value and rarity demand (Secret draws 2× the bidder caps of Common); no bids means the card comes back |
+| Daily rent | $15/day, paid on End day (Godot) |
+| Shop upgrade (Godot) | Neon Sign $150 — +15% buyer demand on raw sales, slab sales, and fixed offers |
+| Save | Automatic after every money move (Godot `user://slab-house-save.json`; web localStorage) |
+
+## Controls
+
+PC controls are locked first; the mobile touch pass follows on one real
+device. See [docs/controls.md](docs/controls.md) for the full key map
+and the touch-pass checklist. The touch pass has **not** been run on a
+real phone yet — mobile is not claimed as tested until it has.
+
+## Release plan
+
+- **Single-player only, against AI bidders.** The live auction is the
+  payoff for graded slabs, not a multiplayer mode; no real-money
+  multiplayer is planned.
+- **Paid one-time, no ads, no in-app purchases.** Decided for this
+  update because the game has no IAP or ad hooks anywhere in the code;
+  the maker can change this, but the economy is balanced as a
+  buy-once game.
+- **Original parody IP only** — no real athletes, teams, or licensed
+  characters (see the open question in the plan; the answer in the
+  build is parody sets).
+- **Discoverability:** the name collides with unrelated Roblox "House
+  Tycoon" games in web search, so store copy and the tagline lead with
+  "trading card shop tycoon" and the card-shop hook, never with
+  "house tycoon" alone.
+
 ## Look & feel
 
 Warm card-shop theme throughout: deep brown panels with gold
@@ -108,11 +150,12 @@ Godot 4.3 project, portrait 720×1280 (`project.godot`, main scene
 | File | What it does |
 |---|---|
 | `scripts/card_data.gd` | Card resource: the 3 parody sets, pack pulls, hidden sub-grade rolls |
-| `scripts/grading.gd` | Grade 1–10 from sub-grades + value multipliers (Gem Mint 10 = 5×) |
-| `scripts/economy.gd` | Cash, inventory, pack buying, raw/slab selling, grading ($25) |
+| `scripts/grading.gd` | Grade 1–10 from sub-grades + value multipliers (Gem Mint 10 = 5×); `preview_grading()` shows fee, grade range, and slab-value range before paying |
+| `scripts/economy.gd` | Cash, inventory, pack buying, raw/slab selling at a fixed offer, grading ($25); buyer-demand multiplier from upgrades |
 | `scripts/inspection_desk.gd` | Draggable loupe, zone detection, 4-metric reveal, tiltable light |
-| `scripts/auction.gd` | 15s countdown, Hype Chat, Whale/SnipeBot/BargainHunter AI, Gavel Slam |
-| `scripts/main.gd` | Screen glue: wires Economy + Desk + Auction together |
+| `scripts/auction.gd` | Graded slabs only; 15s countdown, Hype Chat, Whale/SnipeBot/BargainHunter AI whose caps scale with slab value and rarity demand, Gavel Slam |
+| `scripts/tycoon.gd` | Day progression, $15/day rent, Neon Sign upgrade (+15% demand), save/load to `user://slab-house-save.json` |
+| `scripts/main.gd` | Screen glue: wires Economy + Desk + Auction + Tycoon; enforces inspect-then-grade and slabs-only auction; PC keyboard controls; auto-save |
 
 The Godot scripts mirror the web game's original systems (the newer
 card backs, subgrades, service tiers, pop report and upgrades are
@@ -130,5 +173,6 @@ slab-house-tycoon/
   project.godot         Godot 4.3 project
   main.tscn             Godot main scene
   scripts/              Godot GDScript systems (see table above)
+  docs/controls.md      PC controls + mobile touch-pass checklist
   README.md             this file
 ```
